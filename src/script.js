@@ -337,8 +337,8 @@ const tick = () => {
         model.rotateOnAxis(yAxis, pi);
       
         vec.set(
-            _landmarks[0][CENTER].x * 2,
-            _landmarks[0][CENTER].y * 2, 
+            (landmarks[CENTER].x * 2) - 1,
+                -(landmarks[CENTER].y * 2) + 1,
             0.5 );
       
         vec.unproject( cam );
