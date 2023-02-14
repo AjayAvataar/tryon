@@ -99,8 +99,8 @@ var videoElement = document.getElementsByClassName('input_video')[0];
 // canvasCtx.canvas.width = window.innerWidth;
 // canvasCtx.canvas.height = window.innerHeight;
 
-// let flag = false;
-let flag = true;
+let flag = false;
+// let flag = true;
 
 
 if(flag){
@@ -214,10 +214,6 @@ function arctan360(x, y) {
     return y >= 0 ? (angle + Math.PI) : angle - Math.PI;
 }
 
-/////foooooooo
-
-// console.log('orbit controls', OrbitControls);
-
 const scene = new THREE.Scene();
 
 for(let i = 0; i < 9; ++i){
@@ -314,27 +310,27 @@ var _a = mpObjectron.BOX_KEYPOINTS, BACK_BOTTOM_RIGHT = _a.BACK_BOTTOM_RIGHT, BA
 var pi = Math.PI;
 var vec = new THREE.Vector3();
 var pos = new THREE.Vector3(); 
+
+const geo = new THREE.SphereGeometry( .03, 32, 16 );
+const mat = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+const sp1 = new THREE.Mesh( geo, mat );
+const sp2 = new THREE.Mesh( geo, mat );
+scene.add( sp1 );
+scene.add(sp2);
+
+
+let line = null;
 const tick = () => {
     renderer.render(scene, cam);
     requestAnimationFrame(tick);
     // console.log('landmark', _landmarks[0]);
     if(_landmarks[0][FRONT_TOP_LEFT]?.x && model){
-        for(let i = 0; i < 9; ++i){
-            const landmark = _landmarks[0][i];
-            // console.log(landmark.x, ',', landmark.y, ',', landmark.z, ',');
-        }
         const a = _landmarks[0][FRONT_TOP_LEFT], b = _landmarks[0][FRONT_TOP_RIGHT], c = _landmarks[0][FRONT_BOTTOM_LEFT], d = _landmarks[0][FRONT_BOTTOM_RIGHT];
         const cen = _landmarks[0][CENTER];
 
-        const mid = new THREE.Vector3(-(a.x + b.x + c.x + d.x) + (4 * cen.x), -(a.y + b.y + c.y + d.y) + (4 * cen.y), -(a.z + b.z + c.z + d.z) + (4 * cen.z));
-        // mid.normalize();
-        // const dirc = new THREE.Vector3(cen.x - mid.x, mid.y - cen.y, mid.z - cen.z);
-        // dirc.normalize();
-        // console.log('vector', vec);
-        // model.position.set(_landmarks[0][CENTER].x, _landmarks[0][CENTER].y, _landmarks[0][CENTER].z);
+        const mid = new THREE.Vector3((a.x + b.x + c.x + d.x) - (4 * cen.x), (a.y + b.y + c.y + d.y) - (4 * cen.y), (a.z + b.z + c.z + d.z) - (4 * cen.z));
+        mid.normalize();
         model.lookAt(mid)
-        var yAxis = new THREE.Vector3(0, 1, 0);
-        model.rotateOnAxis(yAxis, pi);
       
         vec.set(
             (landmarks[CENTER].x * 2) - 1,
@@ -352,6 +348,14 @@ const tick = () => {
         console.log('position: ', pos);
         
         model.position.set(pos.x, pos.y, pos.z);
+        var modelAxis = new THREE.AxesHelper(20);
+        model.add(modelAxis);
+        
+        sp1.position.set(pos.x, pos.y, pos.z);
+        const nmid = new THREE.Vector3();
+        nmid.copy( mid);
+        nmid.multiplyScalar(0.3);
+        sp2.position.set(pos.x + nmid.x, pos.y + nmid.y, pos.z + nmid.z);
     }
     else{
         
